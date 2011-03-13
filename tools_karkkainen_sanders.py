@@ -2,18 +2,6 @@
 # -*- coding: utf-8 -*-
 
 #tri des caractères utilisés dans une chaîne
-def lst_char(str_unicode):
-  return sorted(set(str_unicode))
-#  lst_ch = list(set(str_unicode))
-#  lst_ch.sort()
-#  return lst_ch
-
-def leq2(a1,a2,b1,b2) :
-  return (a1 < b1 or (a1 == b1 and a2 <= b2))
-
-def leq3(a1,a2,a3,b1,b2,b3) :
-  return (a1 < b1 or (a1 == b1 and (a2 < b2 or (a2 == b2 and a3 <= b3))))
-#  return (a1 < b1 or (a1 == b1 and leq2(a2,a3,b2,b3)))
 
 def simple_kark_sort(s):
   n = len(s)
@@ -24,9 +12,9 @@ def simple_kark_sort(s):
   return SA
 
 def kark_sort(s, SA, n, alpha) :
-  n0 = int((n+2)/3)
-  n1 = int((n+1)/3)
-  n2 = int(n/3)
+  n0 = (n+2)/3
+  n1 = (n+1)/3
+  n2 = n/3
   n02 = n0 + n2
   SA12 = [0]*(n02+3)
   SA0 = [0]*n0 
@@ -60,9 +48,9 @@ def kark_sort(s, SA, n, alpha) :
       c1 = s[SA12[i]+1]
       c2 = s[SA12[i]+2]
     if SA12[i] % 3 == 1 :
-      s12[int(SA12[i]/3)] = name
+      s12[SA12[i]/3] = name
     else :
-      s12[int(SA12[i]/3) + n0] = name
+      s12[SA12[i]/3 + n0] = name
 
   if name < n02 :
     kark_sort(s12, SA12, n02, array_name)
@@ -72,10 +60,7 @@ def kark_sort(s, SA, n, alpha) :
     for i in xrange(n02) : 
       SA12[s12[i]-1] = i
 
-#  s0 = []
   s0 = [SA12[i]*3 for i in xrange(n02) if SA12[i]<n0]
-#    if SA12[i] < n0 :
-#      s0.append(SA12[i]*3)
 
   radixpass(s0,SA0,s,n0,alpha)
   
@@ -83,42 +68,16 @@ def kark_sort(s, SA, n, alpha) :
   t = n0 - n1
   while k < n :
     i = SA12[t]*3+1 if SA12[t]<n0 else (SA12[t] - n0 ) * 3 + 2
-#    if SA12[t] < n0 :
-#      i = SA12[t] * 3 + 1
-#    else :
-#      i = (SA12[t] - n0 ) * 3 + 2
-
-#    if p < len(SA0) :
 
 #    j = p < n0 and SA0[p] or 0
     j = SA0[p] if p < n0 else 0
-
-#    if p < n0 :
-#      j = SA0[p]
-#    else :
-#      j = 0
  
     if SA12[t] < n0 :
-#      a1,b1 = (s[i], s[j])
-#      test = leq2(s[i], s12[SA12[t]+n0],s[j], s12[int(j/3)])
-#      test = (a1 < b1 or (a1 == b1 and a2 <= b2))
-      if(s[i]==s[j]) :
-        test = (s12[SA12[t]+n0] <= s12[int(j/3)])
-      else :
-        test = s[i] < s[j]
-
+      test = (s12[SA12[t]+n0] <= s12[j/3]) if(s[i]==s[j]) else (s[i] < s[j])
+    elif(s[i]==s[j]) :
+        test = s12[SA12[t]-n0+1] <= s12[j/3 + n0] if(s[i+1]==s[j+1]) else s[i+1] < s[j+1]
     else :
-      if(s[i]==s[j]) :
-        a2,b2 = (s[i+1], s[j+1])
-        if(a2==b2) :
-          test = s12[SA12[t]-n0+1] <= s12[int(j/3)+n0]
-        else :
-          test = a2 < b2
-      else :
-        test = s[i] < s[j]
-#      a1,a2,a3,b1,b2,b3 = (s[i], s[i+1], s12[SA12[t]-n0+1], s[j], s[j+1], s12[int(j/3)+n0])
-#      test = leq3(s[i], s[i+1], s12[SA12[t]-n0+1], s[j], s[j+1], s12[int(j/3)+n0])  
-#      test = (a1 < b1 or (a1 == b1 and (a2 < b2 or (a2 == b2 and a3 <= b3))))
+      test = s[i] < s[j]
 
     if(test) :
       SA[k] = i
@@ -126,13 +85,13 @@ def kark_sort(s, SA, n, alpha) :
       if t == n02 : 
         k += 1
         l = n0 - p
-        SA[k:k+l] = SA0[p:n0]
-        p = n0
-        k += l
-#        while p < n0 :
-#          SA[k] = SA0[p]
-#          p += 1
-#          k += 1
+#        SA[k:k+l] = SA0[p:n0]
+#        p = n0
+#        k += l
+        while p < n0 :
+          SA[k] = SA0[p]
+          p += 1
+          k += 1
       
     else : 
       SA[k] = j
@@ -141,29 +100,21 @@ def kark_sort(s, SA, n, alpha) :
         k += 1
         while t < n02 :
           SA[k] = (SA12[t] * 3) + 1 if SA12[t] < n0 else ((SA12[t] - n0) * 3) + 2
-#            SA[k] = (SA12[t] * 3) + 1
-#          else :
-#            SA[k] = ((SA12[t] - n0) * 3) + 2
           t += 1
           k += 1
     k += 1
 
 
 def radixpass(a, b, r, n, k) :
-  f_ord = ord(str(k[0])) - 1
-  f_new = unichr(f_ord)
-
-  c = {f_new : 0}
-  liste = [f_new]
+  c = {}
   for lettre in k :
-    liste.append(lettre)
     c[lettre] = 0
 
   for i in xrange(n) :
     c[r[a[i]]] += 1
   
   somme = 0 
-  for lettre in liste :
+  for lettre in k :
     freq , c[lettre] = c[lettre] , somme
     somme += freq
 
@@ -172,6 +123,28 @@ def radixpass(a, b, r, n, k) :
     c[r[a[i]]] += 1
 
   return b
+
+def LCP(s, suffix_array):
+  n = len(s)
+  rank = [0 for i in xrange(n)]
+  LCP = [0 for i in xrange(n)]
+  for i in xrange(n):
+    rank[suffix_array[i]] = i
+  l = 0
+  for j in xrange(n):
+    l = max(0, l-1)
+    i = rank[j]
+    j2 = suffix_array[i-1]
+    if i:
+      while l + j < n and l + j2 < n and s[j+l] == s[j2+l]:
+        l += 1
+      LCP[i-1] = l
+#      LCP[i-1] = (i-1, l, max(j + l, j2 + l))
+    else:
+      l = 0
+  return LCP
+
+
 
 if (__name__ == '__main__') :
   print "tools.py"
