@@ -27,6 +27,14 @@ def simple_kark_sort(s) :
   return (s,SA)
 #  return (string, SA, length, k)
 
+def direct_kark_sort(s) :
+  alphabet = [None] + sorted(set(s))
+  k = len(alphabet)
+  n = len(s)
+  t = dict((c, i) for i,c in enumerate(alphabet))
+  SA = array('i', [0]*(n+3))
+  kark_sort(array('i', [t[c] for c in s]+[0]*3), SA, n, k)
+  return SA[:n]
 
 def kark_sort(s, SA, n, K):
   n0  = (n+2) / 3
