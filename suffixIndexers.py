@@ -78,15 +78,34 @@ class SuffixIndexer :
     idx = self._search(word)
     if idx == None:
       return None
-    return self.getWordAt(idx)
-    
+    pos = self.sortedSuffixes[idx]
+    return self.getWordAt(pos)
+
   def searchAllWords(self, word):
     inf, sup = self._searchAll(word)
     if inf == None: 
       return []
     result = [] 
     for idx in xrange(inf, sup+1):
-      result.append(self.getWordAt(idx))
+      pos = self.sortedSuffixes[idx]
+      result.append(self.getWordAt(pos))
+    return result
+        
+  def searchOneWordAndPos(self, word):
+    idx = self._search(word)
+    if idx == None:
+      return None
+    pos = self.sortedSuffixes[idx]
+    return self.getWordAt(pos), self.getPosition(pos)
+        
+  def searchAllWordsAndPos(self, word):
+    inf, sup = self._searchAll(word)
+    if inf == None: 
+      return []
+    result = [] 
+    for idx in xrange(inf, sup+1):
+      pos = self.sortedSuffixes[idx]
+      result.append((self.getWordAt(pos), self.getPosition(pos)))
     return result
     
     
@@ -98,17 +117,22 @@ class ListIndexer(SuffixIndexer):
     charFrontier = chr(2)
     self.word = charFrontier.join(self.array_str)
   
-    self.indexes = array.array('i', [0]*len(self.word))
+    self.indexes = array.array('i', [-1]*len(self.word))
+    self.wordStarts = array.array('i', [0]*len(self.array_str))
     idx_w = k = 0
     for w in self.array_str:
+      self.wordStarts[idx_w] = k
       for _ in w :
         self.indexes[k] = idx_w
         k += 1
       idx_w += 1
       k += 1
 
-  def getWordAt(self, idx):
-    return self.array_str[self.indexes[self.sortedSuffixes[idx]]]         
+  def getWordAt(self, pos):
+    return self.array_str[self.indexes[pos]]         
+    
+  def getPosition(self, pos):
+    return pos - self.wordStarts[self.indexes[pos]]
 
 class DictValuesIndexer(SuffixIndexer):
   def buildWord(self, dictWords):
@@ -119,40 +143,50 @@ class DictValuesIndexer(SuffixIndexer):
     self.word = charFrontier.join(dictWords.itervalues())
 
     self.indexes = {}
+    self.wordStarts = {}
     idx_w = i = 0
     for k, v in dictWords.iteritems():
+      self.wordStarts[k] = i
       for _ in v :
         self.indexes[i] = k
         i += 1
       i += 1
 
-  def getWordAt(self, idx):
-    return self.indexes[self.sortedSuffixes[idx]]
+  def getWordAt(self, pos):
+    return self.indexes[pos]
       
+  def getPosition(self, pos):
+    return pos - self.wordStarts[self.indexes[pos]]
     
 if __name__ == '__main__':                             
-  m = ListIndexer([
+  data = [
     'azerty',
     'ayerty',
     'axxxty',
     'azeyyy',
-  ])
+  ]
+  
+  m = ListIndexer(data)
 
   s = 'y'
-
+  print data
   print s, m.searchOneWord(s)
-
   print s, m.searchAllWords(s)
+  print s, m.searchOneWordAndPos(s)
+  print s, m.searchAllWordsAndPos(s)
 
-  m = DictValuesIndexer({
+  data = {
     'a':'azerty',
     'b':'ayerty',
     'c':'axxxty',
     'd':'azeyyy',
-  })
+  }
+  
+  m = DictValuesIndexer(data)
 
   s = 'y'
-
+  print data
   print s, m.searchOneWord(s)
-
   print s, m.searchAllWords(s)
+  print s, m.searchOneWordAndPos(s)
+  print s, m.searchAllWordsAndPos(s)
