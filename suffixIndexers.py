@@ -1,4 +1,4 @@
-import tools_karkkainen_sanders as suffixesTools
+import tools_karkkainen_sanders as tks
 import array
 
 class SuffixIndexer :
@@ -20,13 +20,13 @@ class SuffixIndexer :
   def sortSuffixes(self) :
     if self.sortedSuffixes != None:
       return
-    self.sortedSuffixes = suffixesTools.direct_kark_sort(self.word)
+    self.sortedSuffixes = tks.direct_kark_sort(self.word)
 
   def computeLCP(self) :
     if self.lcp != None:
       return
     self.sortSuffixes()
-    self.lcp = suffixesTools.LCP(self.word, self.sortedSuffixes)   
+    self.lcp = tks.LCP(self.word, self.sortedSuffixes)   
           
   def _search(self, word):
     self.sortSuffixes()
@@ -168,12 +168,12 @@ if __name__ == '__main__':
   
   m = ListIndexer(data)
 
-  s = 'y'
+  s = 'qouuuaa'
   print data
-  print s, m.searchOneWord(s)
-  print s, m.searchAllWords(s)
-  print s, m.searchOneWordAndPos(s)
-  print s, m.searchAllWordsAndPos(s)
+  print 'sow', s, m.searchOneWord(s)
+  print 'saw', s, m.searchAllWords(s)
+  print 'sowap', s, m.searchOneWordAndPos(s)
+  print 'sawap', s, m.searchAllWordsAndPos(s)
 
   data = {
     'a':'azerty',
@@ -184,9 +184,9 @@ if __name__ == '__main__':
   
   m = DictValuesIndexer(data)
 
-  s = 'y'
+#  s = 'y'
   print data
-  print s, m.searchOneWord(s)
-  print s, m.searchAllWords(s)
-  print s, m.searchOneWordAndPos(s)
-  print s, m.searchAllWordsAndPos(s)
+  print 'sow', s, m.searchOneWord(s)
+  print 'saw', s, m.searchAllWords(s)
+  print 'sowap', s, m.searchOneWordAndPos(s)
+  print 'sawap', s, m.searchAllWordsAndPos(s)
