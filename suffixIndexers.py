@@ -85,11 +85,13 @@ class SuffixIndexer :
     inf, sup = self._searchAll(word)
     if inf == None: 
       return []
-    result = [] 
+#    result = [] 
+    result = set()
     for idx in xrange(inf, sup+1):
       pos = self.sortedSuffixes[idx]
-      result.append(self.getWordAt(pos))
-    return result
+#      result.append(self.getWordAt(pos))
+      result.add(self.getWordAt(pos))
+    return list(result)
         
   def searchOneWordAndPos(self, word):
     idx = self._search(word)
@@ -129,7 +131,9 @@ class ListIndexer(SuffixIndexer):
       k += 1
 
   def getWordAt(self, pos):
-    return self.array_str[self.indexes[pos]]         
+#    return pos
+    return self.indexes[pos]
+#    return self.array_str[self.indexes[pos]]         
     
   def getPosition(self, pos):
     return pos - self.wordStarts[self.indexes[pos]]
@@ -153,6 +157,7 @@ class DictValuesIndexer(SuffixIndexer):
       i += 1
 
   def getWordAt(self, pos):
+#    return pos
     return self.indexes[pos]
       
   def getPosition(self, pos):
@@ -168,7 +173,7 @@ if __name__ == '__main__':
   
   m = ListIndexer(data)
 
-  s = 'qouuuaa'
+  s = 'rty'
   print data
   print 'sow', s, m.searchOneWord(s)
   print 'saw', s, m.searchAllWords(s)

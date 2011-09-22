@@ -37,10 +37,11 @@ def naive_get_all_dict(d, pattern) :
 
 def naive_get_all_with_pos_list(l, pattern) :
   res = []
-  for w in l :
+  for i in xrange(len(l)) :
+    w = l[i]
     r = get_all_pos(w, pattern)
     for o in r :
-      res.append((w,o))
+      res.append((i,o))
   return res
 
 def naive_get_all_with_pos_dict(d, pattern) :
@@ -51,18 +52,6 @@ def naive_get_all_with_pos_dict(d, pattern) :
       res.append((i,o))
   return res
     
-s = 'abcabcc'
-d = {1:s}
-l = [s]
-p = 'c'
-
-r1 = naive_get_all_with_pos_list(l, p)
-r2 = naive_get_all_with_pos_dict(d, p)
-print r1
-print r2
-1/0
-
-
 def naive_search_list(l, pattern) :
   for i in l :
     if is_pattern_in(pattern, i) :
@@ -96,36 +85,29 @@ class Test_list_indexer :
 
   def test_one_word(self) :
     res = self.index.searchOneWord(self.pattern)
+    naive_res = naive_get_all_list(self.l, self.pattern)
     if res == None :
-      self.assertFalse(naive_search_list(self.l, self.pattern))
+      self.assertTrue(naive_res == [])
     else :
-      test = res.index(self.pattern,0)
+      self.assertTrue(res in naive_res)
 
   def test_all_words(self) :
-    res = self.index.searchAllWords(self.pattern)
-    for i in res :
-      try :
-        r = i.index(self.pattern)
-      except Exception, e :
-        self.assertTrue(False)
-    self.assertTrue(True)
+    res = self.index.searchAllWords(self.pattern).sort()
+    naive_res = naive_get_all_list(self.l, self.pattern).sort()
+    self.assertTrue(res == naive_res)
 
   def test_one_word_and_pos(self) :
     res = self.index.searchOneWordAndPos(self.pattern)
+    naive_res = naive_get_all_with_pos_list(self.l, self.pattern)
     if res == None :
-      self.assertFalse(naive_search_list(self.l, self.pattern))
+      self.assertTrue(naive_res == [])
     else :
-      w,p = res
-      self.assertTrue(is_pattern_at_pos(self.pattern, p, w))
+      self.assertTrue(res in naive_res)
 
   def test_all_words_and_pos(self) :
-    res = self.index.searchAllWordsAndPos(self.pattern)
-    if res == [] :
-      self.assertFalse(naive_search_all_list(self.l, self.pattern))
-    else :
-      for w,p in res :
-        self.assertTrue(is_pattern_at_pos(self.pattern, p, w))
-
+    res = self.index.searchAllWordsAndPos(self.pattern).sort()
+    naive_res = naive_get_all_with_pos_list(self.l, self.pattern).sort()
+    self.assertTrue(res == naive_res)
 
 class Test_dict_values_indexer :
   def setUp(self) :
@@ -134,34 +116,29 @@ class Test_dict_values_indexer :
 
   def test_one_word(self) :
     res = self.index.searchOneWord(self.pattern)
+    naive_res = naive_get_all_dict(self.d, self.pattern)
     if res == None :
-      self.assertFalse(naive_search_list(self.d.values(), self.pattern))
+      self.assertTrue(naive_res == [])
     else :
-      w = self.d[res]
-      test = w.index(self.pattern,0)
+      self.assertTrue(res in naive_res)
 
   def test_all_words(self) :
-    res = self.index.searchAllWords(self.pattern)
-    for i in res :
-      self.assertTrue(is_pattern_in(self.pattern, self.d[i]))
+    res = self.index.searchAllWords(self.pattern).sort()
+    naive_res = naive_get_all_dict(self.d, self.pattern).sort()
+    self.assertTrue(res == naive_res)
 
   def test_one_word_and_pos(self) :
     res = self.index.searchOneWordAndPos(self.pattern)
+    naive_res = naive_get_all_with_pos_dict(self.d, self.pattern)
     if res == None :
-      self.assertFalse(naive_search_dict(self.d, self.pattern))
+      self.assertTrue(naive_res == [])
     else :
-      k,p = res
-      w = self.d[k]
-      self.assertTrue(is_pattern_at_pos(self.pattern, p, w))
+      self.assertTrue(res in naive_res)
 
   def test_all_words_and_pos(self) :
-    res = self.index.searchAllWordsAndPos(self.pattern)
-    if res == [] :
-      self.assertFalse(naive_search_dict(self.d, self.pattern))
-    else :
-      for k,p in res :
-        w = self.d[k]
-        self.assertTrue(is_pattern_at_pos(self.pattern, p, w))
+    res = self.index.searchAllWordsAndPos(self.pattern).sort()
+    naive_res = naive_get_all_with_pos_dict(self.d, self.pattern).sort()
+    self.assertTrue(res == naive_res)
 
 class Test_list_a_b(Test_list_indexer, unittest.TestCase) :
   def getData(self) :
