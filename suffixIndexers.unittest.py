@@ -51,32 +51,6 @@ def naive_get_all_with_pos_dict(d, pattern) :
     for o in r :
       res.append((i,o))
   return res
-    
-def naive_search_list(l, pattern) :
-  for i in l :
-    if is_pattern_in(pattern, i) :
-      return True
-  return False
-
-def naive_search_all_list(l, pattern) :
-  res = []
-  for i in l :
-    if is_pattern_in(pattern, i) :
-      res.append(i)
-  return res
-
-def is_pattern_in(pattern, word) :
-  return pattern in word
-
-def is_pattern_at_pos(pattern, pos, word) :
-  return word[pos:pos+len(pattern)] == pattern
-
-def naive_search_dict(d, pattern) :
-  res = []
-  for i,v in d.iteritems() :    
-    if is_pattern_in(pattern, v) :
-      res.append(i)
-  return res
 
 class Test_list_indexer :
   def setUp(self) :
@@ -150,12 +124,12 @@ class Test_list_a_a(Test_list_indexer, unittest.TestCase) :
     l = ['a'*100 for i in xrange(100)]
     return l,'aaa'
 
-class Test_list_python(Test_list_indexer, unittest.TestCase) :
-  def getData(self) :
-    s = open('Python.htm','r').read()
-    s_unicode = unicode(s,'utf-8','replace')[20000:25000]
-    l = re.split('\s', s_unicode)
-    return l, 'ython'
+#class Test_list_python(Test_list_indexer, unittest.TestCase) :
+#  def getData(self) :
+#    s = open('Python.htm','r').read()
+#    s_unicode = unicode(s,'utf-8','replace')[20000:25000]
+#    l = re.split('\s', s_unicode)
+#    return l, 'ython'
 
 class Test_dict_a_a(Test_dict_values_indexer, unittest.TestCase) :
   def getData(self) :
@@ -167,13 +141,13 @@ class Test_dict_a_b(Test_dict_values_indexer, unittest.TestCase) :
     d = dict([(i,'a'*10) for i in xrange(10)])
     return d,'bbb' 
 
-class Test_dict_python(Test_dict_values_indexer, unittest.TestCase) :
-  def getData(self) :
-    s = open('Python.htm','r').read()
-    s_unicode = unicode(s,'utf-8','replace')[20000:25000]
-    l = re.split('\s', s_unicode)
-    d = dict((i, l[i]) for i in xrange(len(l))) 
-    return d, 'ython'
+#class Test_dict_python(Test_dict_values_indexer, unittest.TestCase) :
+#  def getData(self) :
+#    s = open('Python.htm','r').read()
+#    s_unicode = unicode(s,'utf-8','replace')[20000:25000]
+#    l = re.split('\s', s_unicode)
+#    d = dict((i, l[i]) for i in xrange(len(l))) 
+#    return d, 'ython'
 
 if (__name__ == '__main__') :
   unittest.main() 
