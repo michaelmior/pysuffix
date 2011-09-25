@@ -86,12 +86,12 @@ class SuffixIndexer :
     if inf == None: 
       return []
 #    result = [] 
-    result = set()
+    result = []
     for idx in xrange(inf, sup+1):
       pos = self.sortedSuffixes[idx]
 #      result.append(self.getWordAt(pos))
-      result.add(self.getWordAt(pos))
-    return list(result)
+      result.append(self.getWordAt(pos))
+    return list(set(result))
         
   def searchOneWordAndPos(self, word):
     idx = self._search(word)
